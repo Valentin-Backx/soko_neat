@@ -1,11 +1,18 @@
 import neat
 
+#ground is 0/5
+#player is 1/5
+#target is 2/5
+#crate is 3/5
+#wall is 4/5
+
 class Agent:
 	def __init__(self,genome,config,gameParameters):
 		self.genome=genome
 		self.neural_network = neat.nn.FeedForwardNetwork.create(genome,config)
 		self.walls = gameParameters["walls"]
 		self.gameSize = gameParameters["gameSize"]
+
 		self.targets = gameParameters["targetsPos"]
 
 		self.startPlayerAccumulatedDist = self.calculatePlayerDistScore(gameParameters["cratesPos"],gameParameters["playerPos"])
@@ -34,42 +41,26 @@ class Agent:
 	def moveDecision(self,crates,player):
 		self.crates = crates
 		self.player = player
-		walls = []
+
+		game = [0] * (self.gameSize[0] * self.gameSize[1])
+
+
 		for wall in self.walls:
 			# walls+=[(wall[0]-player[0])/self.gameSize[0],(wall[1]-player[1])/self.gameSize[1]]
-			walls+=[(wall[0])/self.gameSize[0],(wall[1])/self.gameSize[1]]
-		lenWall = len(walls)
-		for w in range(0,39-int(lenWall/2)):
-			walls+=[0,0] #on considere maxi 40 murs, on met des 0 pour les murs absents [PROBLEME DE GENERALISATION (OVERFITTING)]
+			game[wall[0]*wall[1]]=1 #wall is 1
 
-		cratesRelToPlayer = []
-		for crate in crates:
-			cratesRelToPlayer+=[(crate[0]-player[0])/self.gameSize[0],(crate[1]-player[1])/self.gameSize[1]]
-			# cratesRelToPlayer+=[(crate[0])/self.gameSize[0],(crate[1])/self.gameSize[1]]
+		for x in self.crates:
+			game[x[0]*x[1]] = 3/5 #crate is 3
 
-		cratesRelToTargets = []
-		for crate in crates:
-			for target in self.targets:
-				cratesRelToTargets+=[(crate[0]-target[0])/self.gameSize[0],(crate[1]-target[1])/self.gameSize[1]]
+		game[self.player[0]*self.player[1]] = 1/5
+
+		for t in self.targets:
+			game[t[0]*t[1]] = 2/5
 
 		input =tuple(
-			#[self.gameSize[0],self.gameSize[1]]+
-			walls+#walls positions relative to player (on considère maxi 40 murs)
-			cratesRelToPlayer+#crates positions relative to player
-			cratesRelToTargets
+			game
 		)
 			
-		ouput = self.neural_network.activate(input)
+		output = self.neural_network.activate(input)
 
-		o = ouput[0]
-		# print(o)
-		if(o > 0 and o<0.25):
-			return 0
-		if(o>=0.25 and o<0.5):
-			return 1
-		if o>=0.5 and o<0.75:
-			return 2
-		if o >=0.75 and o <=1:
-			return 3
-		
-
+		return output.index(max(output))

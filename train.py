@@ -20,6 +20,7 @@ class SokoAppWrapper():
         impossibleMoves = result['impossibleMoves']
 
         self.fitness = wonGame*3000 -impossibleMoves*20 - nPlays*1.5 + playerToCratesScore * 20 + cratesToTargetScore * 500 + exploredTilesRatio * 500
+
         return self.fitness
 
 
@@ -30,16 +31,20 @@ def evolutionary_driver(n=100):
 
     p.add_reporter(neat.StdOutReporter(False))
 
+    # p.run(eval_genomes,n)
     pe = neat.ParallelEvaluator(16,eval_genome)
 
     winner = p.run(pe.evaluate,n=n)
 
     pickle.dump(winner,open('winner.pkl','wb'))
 
+#fonction monothreadée pour le debuggage
+def eval_genomes(genomes,config):
+    for genomeid,genome in genomes:
+        SokoAppWrapper(genome,50,config).run()
 
 def eval_genome(genome,config):
     top_score=0
-
     return SokoAppWrapper(genome,50,config).run()
 
 

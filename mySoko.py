@@ -98,7 +98,7 @@ class SokobanApp:
         global MAP_TILE_WIDTH,MAP_TILE_HEIGHT
         global GAME
 
-        
+
         MAP_TILE_WIDTH = 100
         MAP_TILE_HEIGHT = 100
 
@@ -142,13 +142,15 @@ class SokobanApp:
         self.agent = agent.Agent(self.genome,self.config,{"walls":walls,"gameSize":(GAME_SIZE_X,GAME_SIZE_Y),"targetsPos":targets,"playerPos":GAME.player.pos,"cratesPos":crates})
 
         self.game_over = False
+
+
         while not self.game_over:
             if not hideTraining:
                 level.render(screen)
                 clock.tick(self.framerate)
-            
-            moveDecision =  self.agent.moveDecision(GAME.getCratesPos(),GAME.player.pos)
 
+            moveDecision =  self.agent.moveDecision(GAME.getCratesPos(),GAME.player.pos)
+            
             if not hideTraining:
                 for event in pygame.event.get():
                     if event.type == pygame.locals.QUIT:
