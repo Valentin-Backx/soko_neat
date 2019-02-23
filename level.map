@@ -1,0 +1,28 @@
+[level]
+tileset = tileset_r.png
+map = ..........
+      .#####.##.
+      .#...#..#.
+      .#...####.
+      .##.##*.b.
+      p.....b..*
+
+tilesize = 32
+
+[.]
+name = floor
+
+[#]
+name = wall
+wall = true
+block = true
+
+[b]
+name = crate
+block = true
+sprite = crate.png
+
+[p]
+name = player
+block = true
+sprite = player.png
