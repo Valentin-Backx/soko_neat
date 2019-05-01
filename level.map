@@ -1,13 +1,22 @@
 [level]
 tileset = tileset_r.png
 map = ..........
+      ..........
+      ....p.....
+      ..........
+      ......*.b.
+      ......b..*
+tilesize = 32
+
+
+[previouslevel]
+map = ..........
       .#####.##.
       .#...#..#.
       .#...####.
       .##.##*.b.
       p.....b..*
 
-tilesize = 32
 
 [.]
 name = floor
